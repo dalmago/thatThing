@@ -55,11 +55,11 @@ export class LoginScene extends Component {
           <TextInput
             style={{
               height: 50, 
-              width: 200,
+              width: 300,
               borderWidth: 4,
               borderColor: "rgba(0,0,0,0.5)",
               textAlign: "center",
-              fontSize: 28,
+              fontSize: 19,
             }}
             keyboardType = {"email-address"}
             returnKeyType = {"next"}
@@ -76,7 +76,7 @@ export class LoginScene extends Component {
           <TextInput
             style={{
               height: 50,
-              width: 200,
+              width: 300,
               borderWidth: 4,
               borderColor: "rgba(0,0,0,0.5)",
               textAlign: "center",
@@ -163,17 +163,22 @@ export class LoginScene extends Component {
       body: JSON.stringify(js)
     }).then((res) => res.json()).then((res) => {
       if (__DEV__ === true) // if in development
-        console.log(res);
+        console.log('login_dw: ', res);
       
       if (res.success === false){
         this.setState({loading: false, text:'', text2: ''});
-        Alert.alert('Login falhou!', 'Usuário ou senha inválido. Tente novamente ou aguarde alguns instantes.');
+        Alert.alert('Login falhou!', 'Usuário ou senha inválido');
       } else if (res.auth.success === true){
         nav.pop();
-        nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId });
+        nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
       } else{
         Alert.alert('Erro desconhecido');
       }
+    }).catch((err) => {
+      if (__DEV__ === true) // if in development
+        console.log('login_dw err: ', err);
+      
+      Alert.alert('Login falhou!', 'Verifique sua conexão com a internet');
     });
   }
 }
