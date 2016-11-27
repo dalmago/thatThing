@@ -1,3 +1,8 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
 
 import React, { Component } from 'react';
 import {
@@ -11,7 +16,7 @@ import {
   ScrollView,
 } from 'react-native'
 
-export class ListScene extends Component {
+export class ThingsScene extends Component {
   render() {
     return (
       <View

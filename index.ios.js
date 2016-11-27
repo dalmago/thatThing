@@ -9,6 +9,6 @@ import {
   AppRegistry,
 } from 'react-native';
 
-import { LoginScene } from './app/LoginScene';
+import { InitialScene } from './app/InitialScene';
 
-AppRegistry.registerComponent('ThatThing', () => LoginScene);
+AppRegistry.registerComponent('ThatThing', () => InitialScene);

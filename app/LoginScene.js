@@ -1,20 +1,21 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
 
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   Button,
   TextInput,
   Picker,
+  ActivityIndicator,
+  Alert,
 } from 'react-native'
 
 export class LoginScene extends Component {
+  constructor(props){
+    super(props);
+    
+    this.state = {pickerValue: 'dw', loading: false};
+  }
   render() {
     return (
       <View
@@ -35,11 +36,11 @@ export class LoginScene extends Component {
             style={{
               width: 200,
             }}
-            selectedValue={(this.state && this.state.pickerValue) || 'a'}
-            onValueChange={(value) => {}}>
-            <Picker.Item label={'Telit Device Wise'} value={'a'} />
-            <Picker.Item label={'AWS IoT'} value={'b'} />
-            <Picker.Item label={'Cisco Jasper'} value={'c'} />
+            selectedValue={this.state && this.state.pickerValue}
+            onValueChange={(value) => {this.setState({pickerValue: value});}}>
+            <Picker.Item label={'Telit Device Wise'} value={'dw'} />
+            <Picker.Item label={'AWS IoT'} value={'aws'} />
+            <Picker.Item label={'Cisco Jasper'} value={'jas'} />
           </Picker>
           
           <Text>{'\n'}</Text>
@@ -60,10 +61,15 @@ export class LoginScene extends Component {
               textAlign: "center",
               fontSize: 28,
             }}
-            placeholder={"Login"}
+            keyboardType = {"email-address"}
+            returnKeyType = {"next"}
+            autoCapitalize = {"none"}
+            placeholder= {"Login"}
+            autoCorrect = {false}
+            autoFocus = {true}
             placeholderTextColor={"rgb(103,103,103)"}
             onChangeText={(text) => {this.setState({text})}}
-            onSubmitEditing={() => {this.setState({text: ''})}}
+            onSubmitEditing={() => {this.refs.pass.focus();}}
             value={(this.state && this.state.text) || ''}
           />
 
@@ -76,10 +82,15 @@ export class LoginScene extends Component {
               textAlign: "center",
               fontSize: 28,
             }}
+            ref = {"pass"}
+            autoCapitalize = {"none"}
+            secureTextEntry = {true}
+            returnKeyType = {"done"}
+            returnKeyLabel = {"Login"}
             placeholder={"Password"}
             placeholderTextColor={"rgb(103,103,103)"}
             onChangeText={(text) => {this.setState({text2: text})}}
-            onSubmitEditing={() => {this.setState({text2: ''})}}
+            onSubmitEditing={() => {this.login(this.props.navigator);}}
             value={(this.state && this.state.text2) || ''}
           />
         </View>
@@ -91,23 +102,78 @@ export class LoginScene extends Component {
             alignItems: "center",
           }}>
           <Text>{'\n'}</Text>
+          
+          {(this.state.loading)?
+          <ActivityIndicator
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            animating={this.state.loading}
+            size={"large"}
+            color={'black'}
+          />
+          :
           <Button
-            onPress={()=>{}}
+            onPress={()=>{
+              this.login(this.props.navigator);
+            }}
             title="Login"
             color="rgb(0,0,0)"
-          />
+          />}
         </View>
         
       </View>
     );
   }
+  
+  login(nav){   
+    this.setState({loading: true});
+    
+    var portal = this.state.pickerValue;
+    
+    switch(portal){
+      case 'dw':
+        this.login_dw(nav);
+        break;
+        
+      default:
+        Alert.alert('Portal ainda não implementado');
+        this.setState({loading: false});
+    }
+  }
+  
+  login_dw(nav){
+    var login = this.state.text;
+    var pass = this.state.text2;
+    var server = "https://api.devicewise.com/api";
+    
+    js = {
+      "auth" : {
+        "command" : "api.authenticate",
+        "params" : {
+          "username": login,
+          "password": pass
+        }
+      }
+    }
+    
+    fetch(server, {
+      method: 'POST',
+      body: JSON.stringify(js)
+    }).then((res) => res.json()).then((res) => {
+      if (__DEV__ === true) // if in development
+        console.log(res);
+      
+      if (res.success === false){
+        this.setState({loading: false, text:'', text2: ''});
+        Alert.alert('Login falhou!', 'Usuário ou senha inválido. Tente novamente ou aguarde alguns instantes.');
+      } else if (res.auth.success === true){
+        nav.pop();
+        nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId });
+      } else{
+        Alert.alert('Erro desconhecido');
+      }
+    });
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-});
