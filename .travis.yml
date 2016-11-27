@@ -63,14 +63,10 @@ script:
 
   #- keytool -genkey -v -noprompt -alias ${KEY_ALIAS} -dname "CN=MatheusDalMago, OU=ID, O=Private, L=Unknown, S=Unknown, C=BR" -keystore $TRAVIS_BUILD_DIR/android/app/${KEYSTORE_NAME} -keyalg RSA -keysize 2048 -validity 10000 -storepass ${KEYSTORE_PASSWORD} -keypass ${KEY_PASSWORD}
   - mkdir ~/.gradle/
-  - echo "MYAPP_RELEASE_STORE_FILE=" > ~/.gradle/gradle.properties
-  - echo ${KEYSTORE_NAME} >> ~/.gradle/gradle.properties
-  - echo "\nMYAPP_RELEASE_KEY_ALIAS=" >> ~/.gradle/gradle.properties
-  - echo ${KEY_ALIAS} >> ~/.gradle/gradle.properties
-  - echo "\nMYAPP_RELEASE_STORE_PASSWORD=" >> ~/.gradle/gradle.properties
-  - echo ${KEYSTORE_PASSWORD} >> ~/.gradle/gradle.properties
-  - echo "\nMYAPP_RELEASE_KEY_PASSWORD=" >> ~/.gradle/gradle.properties
-  - echo ${KEY_PASSWORD} >> ~/.gradle/gradle.properties
+  - echo MYAPP_RELEASE_STORE_FILE=${KEYSTORE_NAME} > ~/.gradle/gradle.properties
+  - echo MYAPP_RELEASE_KEY_ALIAS=${KEY_ALIAS} >> ~/.gradle/gradle.properties
+  - echo MYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PASSWORD} >> ~/.gradle/gradle.properties
+  - echo MYAPP_RELEASE_KEY_PASSWORD=${KEY_PASSWORD} >> ~/.gradle/gradle.properties
 
   - cat ~/.gradle/gradle.properties
 
