@@ -1,8 +1,8 @@
 #language: android
-language: node_js
+#language: node_js
 
-node_js:
-  - "6"
+#node_js:
+#  - "6"
 
 #android:
   #components:
@@ -29,13 +29,19 @@ node_js:
     #- sys-img-x86-android-17
 
 sudo: true
+os:
+  - linux
+dist:
+  - xenial
 
-install:
+before_install:
+  - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-  - sudo apt-get update && sudo apt-get install yarn
+
+  - sudo apt-get update
+  - sudo apt-get install -y build-essential nodejs yarn
+  - sudo npm install react-native-cli
+
+install:
   - yarn
-  #- sudo apt-get install -y build-essential
-  #- curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-  #- sudo apt-get install -y nodejs
-  #- sudo npm install react-native-cli
