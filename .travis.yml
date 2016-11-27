@@ -43,12 +43,13 @@ before_install:
 
   - wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
   - tar -xvf android-sdk_r24.4.1-linux.tgz
-  - cd android-sdk-linux
-  - cp -R $TRAVIS_BUILD_DIR/android/licenses .
-  - cd tools
+  #- cd android-sdk-linux
+  #- cp -R $TRAVIS_BUILD_DIR/android/licenses .
+  - cp -R $TRAVIS_BUILD_DIR/android/licenses android-sdk-linux/
+  #- cd tools
   #- ./android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.1,android-25,extra-android-m2repository,extra-android-support,extra-google-m2repository
-  - ./android update sdk --no-ui
-  - cd ../../
+  #- ./android update sdk --no-ui
+  #- cd ../../
   - export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$PWD/android-sdk-linux/tools:$PWD/android-sdk-linux/build-tools/22.0.1/
 
 install:
