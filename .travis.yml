@@ -44,4 +44,4 @@ before_install:
   - sudo npm install react-native-cli
 
 install:
-  - yarn
+  - yarn install
