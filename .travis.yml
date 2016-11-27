@@ -1,38 +1,9 @@
-#language: android
-#language: node_js
-
-#node_js:
-#  - "6"
-
-#android:
-  #components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
-    #- platform-tools
-    #- tools
-
-    # The BuildTools version used by your project
-    #- build-tools-25.0.0
-
-    # The SDK version used to compile your project
-    #- android-25
-
-    # Additional components
-    #- extra-google-google_play_services
-    #- extra-google-m2repository
-    #- extra-android-m2repository
-    #- addon-google_apis-google-19
-
-    # Specify at least one system image,
-    # if you need to run emulator(s) during your tests
-    #- sys-img-armeabi-v7a-android-22
-    #- sys-img-x86-android-17
-
-sudo: true
 os:
   - linux
 dist:
   - xenial
+
+sudo: true
 
 before_install:
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
@@ -43,14 +14,12 @@ before_install:
 
   - wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
   - tar -xvf android-sdk_r24.4.1-linux.tgz
-  #- cd android-sdk-linux
-  #- cp -R $TRAVIS_BUILD_DIR/android/licenses .
+
   - cp -R $TRAVIS_BUILD_DIR/android/licenses android-sdk-linux/
   - export ANDROID_HOME=${PWD}/android-sdk-linux/
-  #- cd tools
+
   #- ./android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.1,android-25,extra-android-m2repository,extra-android-support,extra-google-m2repository
-  #- ./android update sdk --no-ui
-  #- cd ../../
+
   - export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$PWD/android-sdk-linux/tools:$PWD/android-sdk-linux/build-tools/22.0.1/
 
 install:
@@ -66,3 +35,8 @@ script:
 
   - cd $TRAVIS_BUILD_DIR/android/
   - ./gradlew assembleRelease
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
