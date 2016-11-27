@@ -46,6 +46,7 @@ before_install:
   #- cd android-sdk-linux
   #- cp -R $TRAVIS_BUILD_DIR/android/licenses .
   - cp -R $TRAVIS_BUILD_DIR/android/licenses android-sdk-linux/
+  - set ANDROID_HOME=${PWD}/android-sdk-linux/
   #- cd tools
   #- ./android update sdk --no-ui --all --filter tools,platform-tools,build-tools-25.0.1,android-25,extra-android-m2repository,extra-android-support,extra-google-m2repository
   #- ./android update sdk --no-ui
