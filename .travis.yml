@@ -36,12 +36,14 @@ dist:
 
 before_install:
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  #- curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  #- echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+
+  #- curl -o- -L https://yarnpkg.com/install.sh | bash
 
   - sudo apt-get update
-  - sudo apt-get install -y build-essential nodejs yarn
-  - sudo npm install react-native-cli
+  - sudo apt-get install -y build-essential nodejs
+  - sudo npm install yarn react-native-cli
 
 install:
-  - yarn install
+  - yarn
