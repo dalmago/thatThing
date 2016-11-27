@@ -43,7 +43,7 @@ before_install:
 
   - sudo apt-get update
   - sudo apt-get install -y build-essential nodejs
-  - sudo npm install yarn react-native-cli
+  - npm install --global yarn react-native-cli
 
 install:
   - yarn
