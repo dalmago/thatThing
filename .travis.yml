@@ -42,8 +42,19 @@ before_install:
   #- curl -o- -L https://yarnpkg.com/install.sh | bash
 
   - sudo apt-get update
-  - sudo apt-get install -y build-essential nodejs
+  - sudo apt-get install -y build-essential nodejs openjdk-7-jdk libc6:i386 libstdc++6:i386 zlib1g:i386
   - npm install --global yarn react-native-cli
+
+  - wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+  - tar -xvf android-sdk_r24.4.1-linux.tgz
+  - cd android-sdk-linux/tools
+  - ./android update sdk --no-ui
+  - export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$HOME/android-sdk-linux/tools:$HOME/android-sdk-linux/build-tools/22.0.1/
 
 install:
   - yarn
+
+
+script:
+  - ls
+  - ls $HOME
