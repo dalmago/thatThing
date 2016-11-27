@@ -47,7 +47,9 @@ before_install:
 
   - wget https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
   - tar -xvf android-sdk_r24.4.1-linux.tgz
-  - cd android-sdk-linux/tools
+  - cd android-sdk-linux
+  - cp -R $TRAVIS_BUILD_DIR/android/licenses .
+  - cd tools
   - ./android update sdk --no-ui
   - export PATH=${PATH}:$HOME/android-sdk-linux/platform-tools:$HOME/android-sdk-linux/tools:$HOME/android-sdk-linux/build-tools/22.0.1/
 
