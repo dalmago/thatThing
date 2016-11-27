@@ -1,4 +1,8 @@
 #language: android
+language: node_js
+
+node_js:
+  - "6"
 
 #android:
   #components:
@@ -26,13 +30,7 @@
 
 install:
   - uname -a
-  - sudo apt-get install -y build-essential
-  - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
-  - sudo apt-get install -y nodejs
+  #- sudo apt-get install -y build-essential
+  #- curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+  #- sudo apt-get install -y nodejs
   - sudo npm install react-native-cli
-  
-os: 
-  - linux
-  
-dist:
-  - xenial
