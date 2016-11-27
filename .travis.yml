@@ -72,5 +72,7 @@ script:
   - echo "\nMYAPP_RELEASE_KEY_PASSWORD="
   - echo ${KEY_PASSWORD} > ~/.gradle/gradle.properties
 
+  - cat ~/.gradle/gradle.properties
+
   - cd $TRAVIS_BUILD_DIR/android/
   - ./gradlew assembleRelease
