@@ -36,7 +36,19 @@ script:
   - cd $TRAVIS_BUILD_DIR/android/
   - ./gradlew assembleRelease
 
-  - ls app/build/outputs/apk/
+after_success:
+  - mkdir $TRAVIS_BUILD_DIR/build/
+  - cd $TRAVIS_BUILD_DIR/build/
+  - cp $TRAVIS_BUILD_DIR/android/app/build/outputs/apk/app-release.apk .
+
+  - git init
+  - git checkout -b release
+  - git config --local user.name ${MY_NAME}
+  - git config --local user.email ${MY_EMAIL}
+  - git add app-release.apk
+  - git commit -m "Automatically deploying to releases"
+  - git tag v0.1
+  - git push --force --quiet "https://${GITHUB_TOKEN}@github.com/dalmago/thatThing.git" v0.1:release
 
 notifications:
   email:
