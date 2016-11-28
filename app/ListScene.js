@@ -14,17 +14,35 @@ export class ListScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: false, thingsList: {"count": 0, "fields": [], "result":[]}};
+    this.state = {loading: false, thingsList: []};
     
     this.getThingsList();
   }
   render() {
+
+    var thingGroup = this.state.thingsList.map(function (thingCat, i) {
+      
+      var things = thingCat.map(function (thing, j) {
+        return (
+          <View key={j}><Text style={styles.content}>{thing.key}</Text>
+            <Text style={{fontSize: 5}}>{'\n'}</Text>
+          </View>
+        );}, this);
+      
+      return (
+        <View key={i}>
+          <Text style={styles.titles}>{ thingCat[0].defName }</Text>
+          <Text style={{fontSize: 5}}>{'\n'}</Text>
+          { things }
+        </View>
+      );}, this);
+    
     return (
       <View
         style={{
           flex: 1,
           justifyContent: "flex-start",
-          alignItems: "stretch",
+          alignItems: "stretch", 
           backgroundColor: "rgba(35,109,197,1)",
         }}>
         {<Text>{''}</Text>}
@@ -89,7 +107,7 @@ export class ListScene extends Component {
         
         <View
           style={{
-            flex: 10,
+            flex: 10,  
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "rgb(74,144,226)",
@@ -141,10 +159,10 @@ export class ListScene extends Component {
                 VER MAPA
               </Text>
             </View>
+
             <Text style={{fontSize: 5}}>{'\n'}</Text>
             
-            <Text style={styles.titles}>Atributos</Text>
-            {this.state.thingsList.result}
+            { thingGroup }
             
           </ScrollView>}
         </View>
@@ -162,7 +180,7 @@ export class ListScene extends Component {
         "command": "thing.list",
         "params" : {
           "limit": 10,
-          "sort": "-lastSeen",
+          "sort": "+defName",
           "hasLoc": true
         }
       }
@@ -175,13 +193,14 @@ export class ListScene extends Component {
       if (__DEV__ === true)
         console.log('getThingsList: ', res);
       
-      this.setState({loading: false});
-      
       if (res[1].success === true){
-        this.setState({thingsList: res[1].params});
+        //this.setState({thingsList: res[1].params});
+        this.updateThingsList(res[1].params.result);
       } else{
         Alert.alert('Erro obtendo dados', 'Tente fazer login novamente');
       }
+      
+      this.setState({loading: false});
       
     }).catch((err) => {
       if (__DEV__ === true)
@@ -190,13 +209,39 @@ export class ListScene extends Component {
       Alert.alert('Erro obtendo dados', 'Você está conectado?');
     });
   }
+  
+  updateThingsList(list){
+    
+    lastDefName = list[0].defName;
+    defGroup = []
+    thingsList = []
+    for (i=0; i<list.length; i++){
+      if (list[i].defName == lastDefName){
+        defGroup = defGroup.concat(list[i]);
+      } else{
+        thingsList = thingsList.concat([defGroup]);
+        defGroup = [];
+      }
+    }
+    thingsList = thingsList.concat([defGroup]);
+    
+    this.setState({thingsList: thingsList});
+  }
 }
+
+//thingsList: [{"def": "nomeDef", "thingKeys":[]}, ...]
 
 const styles = StyleSheet.create({
   titles: {
     color: 'black',
     fontSize: 24,
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  content: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: "normal",
     textAlign: "center",
   },
 });
