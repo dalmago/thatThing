@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "react": "^15.4.1",
-    "react-native": "^0.38.0"
+    "react-native": "^0.38.0",
+    "react-native-maps": "^0.11.0",
+    "react-native-vector-icons": "^3.0.0"
   },
   "jest": {
     "preset": "jest-react-native"
@@ -17,7 +19,7 @@
     "babel-jest": "^17.0.2",
     "babel-preset-react-native": "1.9.0",
     "jest": "^17.0.3",
-    "jest-react-native": "^17.0.3",
+    "jest-react-native": "^17.1.0",
     "react-test-renderer": "^15.4.1"
   }
 }

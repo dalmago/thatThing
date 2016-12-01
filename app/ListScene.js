@@ -8,7 +8,10 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  TouchableOpacity,
 } from 'react-native'
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export class ListScene extends Component {
   constructor(props){
@@ -93,23 +96,19 @@ export class ListScene extends Component {
               justifyContent: "center",
               alignItems: "center",
             }}>
-            <Image 
-              style={{
-                width: 40,
-                height: 40,
-              }}
-              resizeMode={"contain"}
-              source={require('./static/img/plus.png')}
-            />
-            
+            <TouchableOpacity
+              onPress={() => {this.getThingsList()}}
+              activeOpacity={34 / 100}>
+              <Icon name="refresh" size={50} color="rgba(40,40,40,1)" />
+            </TouchableOpacity>            
           </View>
         </View>
         
         <View
           style={{
-            flex: 10,  
+            flex: 10,            
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: "center", 
             backgroundColor: "rgb(74,144,226)",
           }}>
           
@@ -130,14 +129,7 @@ export class ListScene extends Component {
                 alignItems: "center",
               }}>
               
-              <Image 
-                style={{
-                  width: 40,
-                  height: 40,
-                }}
-                resizeMode={"contain"}
-                source={require('./static/img/search.png')}
-              />
+              <Icon name="search" size={50} color="rgba(42,42,42,1)" />
             </View>
             
             <Text style={{fontSize: 5}}>{'\n'}</Text>
@@ -149,15 +141,21 @@ export class ListScene extends Component {
                 alignItems: 'stretch',
                 backgroundColor: "rgb(0,0,0)",
               }}>
-              <Text
-                style={{
-                  color:  "white" ,
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                }}>
-                VER MAPA
-              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigator.push({ sceneIndex: 2 });
+                }}
+                activeOpacity={11 / 100}>
+                <Text
+                  style={{
+                    color:  "white" ,
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}>
+                  VER MAPA
+                </Text>
+              </TouchableOpacity>
             </View>
 
             <Text style={{fontSize: 5}}>{'\n'}</Text>
