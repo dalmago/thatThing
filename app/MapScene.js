@@ -37,7 +37,7 @@ export class MapScene extends Component {
                                               longitude: pos.coords.longitude, 
                                               latitudeDelta: this.state.region.latitudeDelta, 
                                               longitudeDelta: this.state.region.longitudeDelta}});
-    });
+    }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});
   }
   
   render() {    
