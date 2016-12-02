@@ -27,6 +27,11 @@ export class MapScene extends Component {
                                           latitudeDelta: LATITUDE_DELTA, 
                                           longitudeDelta: LONGITUDE_DELTA}};
     
+    Icon.getImageSource('map-marker', 30, "rgb(65,117,5)").then((source) => this.setState({ thingIcon1: source }));
+    Icon.getImageSource('map-marker', 30, "rgb(248,231,28)").then((source) => this.setState({ thingIcon2: source }));
+    Icon.getImageSource('map-marker', 30, "rgb(245,166,35)").then((source) => this.setState({ thingIcon3: source }));
+    Icon.getImageSource('map-marker', 30, "rgb(208,2,27)").then((source) => this.setState({ thingIcon4: source }));
+    
     navigator.geolocation.getCurrentPosition((pos) => {
       this.setState({loading: false, region: {latitude: pos.coords.latitude, 
                                               longitude: pos.coords.longitude, 
@@ -118,12 +123,11 @@ export class MapScene extends Component {
             {
             this.props.route.thingsList[0].map((thing, i) => {
               var trash_level = thing.properties.trash_level.value;
-              var color = ((trash_level < 25)? "rgb(65,117,5)" : 
-                           ((trash_level < 50)? "rgb(248,231,28)" : 
-                            ((trash_level < 75)? "rgb(245,166,35)" : "rgb(208,2,27)")));
               return (
                   <MapView.Marker coordinate={{latitude: thing.loc.lat, longitude: thing.loc.lng}} key={i} 
-                    pinColor={color}
+                    image={((trash_level < 25)? this.state.thingIcon1 : 
+                           ((trash_level < 50)? this.state.thingIcon2 : 
+                            ((trash_level < 75)? this.state.thingIcon3 : this.state.thingIcon4)))}
                   />
               );}, this)
             }
