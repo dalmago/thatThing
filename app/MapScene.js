@@ -4,21 +4,28 @@ import {
   Text,
   View,
   Image,
+  Dimensions,
   ActivityIndicator,
 } from 'react-native'
 
 import MapView from 'react-native-maps';
-//var MapView = require('react-native-maps');
 import Icon from 'react-native-vector-icons/FontAwesome';
+
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE = -29.682855;
+const LONGITUDE = -53.810156;
+const LATITUDE_DELTA = 0.034764;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 export class MapScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: true, region: {latitude: -29.71339420208543,  
-                                          longitude: -53.71697937437226, 
-                                          latitudeDelta: 0.004765165452011331, 
-                                          longitudeDelta: 0.00401165694565475}};
+    this.state = {loading: true, region: {latitude: LATITUDE,  
+                                          longitude: LONGITUDE, 
+                                          latitudeDelta: LATITUDE_DELTA, 
+                                          longitudeDelta: LONGITUDE_DELTA}};
     
     navigator.geolocation.getCurrentPosition((pos) => {
       this.setState({loading: false, region: {latitude: pos.coords.latitude, 
@@ -28,7 +35,7 @@ export class MapScene extends Component {
     });
   }
   
-  render() {
+  render() {    
     return (
       <View
         style={{
@@ -69,10 +76,10 @@ export class MapScene extends Component {
               alignItems: "center",
             }}>
             <Icon.Button name="map-marker" size={50} color="rgb(0,0,0)" backgroundColor="rgba(35,109,197,1)" 
-              onPress={() => {this.setState({region: {latitude: -29.71339420208543,  
-                                                      longitude: -53.71697937437226, 
-                                                      latitudeDelta: 0.002765165452011331, 
-                                                      longitudeDelta: 0.00201165694565475}})}}
+              onPress={() => {this.setState({region: {latitude: LATITUDE,  
+                                                      longitude: LONGITUDE, 
+                                                      latitudeDelta: LATITUDE_DELTA, 
+                                                      longitudeDelta: LONGITUDE_DELTA}})}}
             />
           </View>
         </View>
@@ -107,9 +114,20 @@ export class MapScene extends Component {
               bottom: 0,
             }}
             
-            onRegionChange={(region) => {this.setState({region: region})}}
-            
-          />}
+            onRegionChange={(region) => {this.setState({region: region})}}>
+            {
+            this.props.route.thingsList[0].map((thing, i) => {
+              var trash_level = thing.properties.trash_level.value;
+              var color = ((trash_level < 25)? "rgb(65,117,5)" : 
+                           ((trash_level < 50)? "rgb(248,231,28)" : 
+                            ((trash_level < 75)? "rgb(245,166,35)" : "rgb(208,2,27)")));
+              return (
+                  <MapView.Marker coordinate={{latitude: thing.loc.lat, longitude: thing.loc.lng}} key={i} 
+                    pinColor={color}
+                  />
+              );}, this)
+            }
+          </MapView>}
         </View>
       </View>
     );
