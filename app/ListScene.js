@@ -23,9 +23,9 @@ export class ListScene extends Component {
   }
   render() {
 
-    var thingGroup = this.state.thingsList.map(function (thingCat, i) {
+    var thingGroup = this.state.thingsList.map((thingCat, i) => {
       
-      var things = thingCat.map(function (thing, j) {
+      var things = thingCat.map((thing, j) => {
         return (
           <View key={j}><Text style={styles.content}>{thing.key}</Text>
             <Text style={{fontSize: 5}}>{'\n'}</Text>
