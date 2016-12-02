@@ -34,7 +34,7 @@ class NavigationScene extends Component {
     } else if (this.props.route.sceneIndex == 1){
       return <ListScene route={this.props.route} navigator={this.props.navigator} />
     } else{
-      return <MapScene />
+      return <MapScene route={this.props.route} navigator={this.props.navigator} />
     }
   }
 }

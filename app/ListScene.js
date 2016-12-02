@@ -17,7 +17,7 @@ export class ListScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: false, thingsList: []};
+    this.state = {loading: true, thingsList: []};
     
     this.getThingsList();
   }
@@ -96,17 +96,16 @@ export class ListScene extends Component {
               justifyContent: "center",
               alignItems: "center",
             }}>
-            <TouchableOpacity
-              onPress={() => {this.getThingsList()}}
-              activeOpacity={34 / 100}>
-              <Icon name="refresh" size={50} color="rgba(40,40,40,1)" />
-            </TouchableOpacity>            
+            <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
+                this.setState({loading: true});
+                this.getThingsList();
+              }}/>
           </View>
         </View>
         
         <View
           style={{
-            flex: 10,            
+            flex: 10,       
             justifyContent: "center",
             alignItems: "center", 
             backgroundColor: "rgb(74,144,226)",
@@ -129,33 +128,21 @@ export class ListScene extends Component {
                 alignItems: "center",
               }}>
               
-              <Icon name="search" size={50} color="rgba(42,42,42,1)" />
-            </View>
-            
-            <Text style={{fontSize: 5}}>{'\n'}</Text>
-            
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'flex-start',
-                alignItems: 'stretch',
-                backgroundColor: "rgb(0,0,0)",
-              }}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigator.push({ sceneIndex: 2 });
-                }}
-                activeOpacity={11 / 100}>
-                <Text
+              <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
+                onPress={() => {}} 
+              />
+              
+              <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
+                onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}}>
+                {/*<Text
                   style={{
-                    color:  "white" ,
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
+                    color: 'black',
+                    fontSize: 21,
+                    fontWeight: "bold",
                   }}>
                   VER MAPA
-                </Text>
-              </TouchableOpacity>
+                </Text>*/}
+              </Icon.Button>
             </View>
 
             <Text style={{fontSize: 5}}>{'\n'}</Text>

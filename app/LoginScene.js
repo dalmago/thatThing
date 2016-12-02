@@ -14,7 +14,7 @@ export class LoginScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {pickerValue: 'dw', loading: false};
+    this.state = {pickerValue: 'dw', loading: false, text: '', text2: ''};
   }
   render() {
     return (
@@ -169,8 +169,9 @@ export class LoginScene extends Component {
         this.setState({loading: false, text:'', text2: ''});
         Alert.alert('Login falhou!', 'Usuário ou senha inválido');
       } else if (res.auth.success === true){
-        nav.pop();
-        nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
+        //nav.pop();
+        //nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
+        nav.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
       } else{
         Alert.alert('Erro desconhecido');
       }
