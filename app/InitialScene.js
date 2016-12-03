@@ -8,6 +8,7 @@ import {
 import { LoginScene } from './LoginScene';
 import { ListScene } from './ListScene';
 import { MapScene } from './MapScene';
+import { QRCodeScene } from './QRCodeScene';
 
 export class InitialScene extends Component {
   render() {
@@ -33,8 +34,10 @@ class NavigationScene extends Component {
       return <LoginScene navigator={this.props.navigator} />
     } else if (this.props.route.sceneIndex == 1){
       return <ListScene route={this.props.route} navigator={this.props.navigator} />
-    } else{
+    } else if (this.props.route.sceneIndex == 2){
       return <MapScene route={this.props.route} navigator={this.props.navigator} />
+    } else{
+      return <QRCodeScene route={this.props.route} navigator={this.props.navigator} />
     }
   }
 }

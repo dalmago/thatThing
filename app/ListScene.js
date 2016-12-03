@@ -17,17 +17,17 @@ export class ListScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: true, thingsList: []};
+    this.state = {loading: true, thingsList: [], visibleThings: []};
     
     this.getThingsList();
   }
   render() {
 
-    var thingGroup = this.state.thingsList.map((thingCat, i) => {
+    var thingGroup = this.state.visibleThings.map((thingCat, i) => {
       
       var things = thingCat.map((thing, j) => {
         return (
-          <View key={j}><Text style={styles.content}>{thing.key}</Text>
+          <View key={j}><Text style={styles.content}>{thing.name}</Text>
             <Text style={{fontSize: 5}}>{'\n'}</Text>
           </View>
         );}, this);
@@ -69,7 +69,7 @@ export class ListScene extends Component {
                 textAlign: 'center',
               }}>
               {(this.props.route.portal === 'dw')?
-                'Device Wise' : 'Device Wisy'
+                'Device Wise' : ''
               }
             </Text>
           </View>
@@ -99,7 +99,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>
+              }}/>          
           </View>
         </View>
         
@@ -129,19 +129,11 @@ export class ListScene extends Component {
               }}>
               
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
-                onPress={() => {}} 
+                onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
               />
-              
+                        
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
-                onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}}>
-                {/*<Text
-                  style={{
-                    color: 'black',
-                    fontSize: 21,
-                    fontWeight: "bold",
-                  }}>
-                  VER MAPA
-                </Text>*/}
+                onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}}   >      
               </Icon.Button>
             </View>
 
@@ -159,7 +151,7 @@ export class ListScene extends Component {
     var server = "https://api.devicewise.com/api";
     var sessionId = this.props.route.sessionId;
     
-    js = {
+    var js = {
       "auth":{"sessionId": sessionId},
       "1": {
         "command": "thing.list",
@@ -196,10 +188,9 @@ export class ListScene extends Component {
   }
   
   updateThingsList(list){
-    
-    lastDefName = list[0].defName;
-    defGroup = []
-    thingsList = []
+    var lastDefName = list[0].defName;
+    var defGroup = []
+    var thingsList = []
     for (i=0; i<list.length; i++){
       if (list[i].defName == lastDefName){
         defGroup = defGroup.concat(list[i]);
@@ -210,7 +201,27 @@ export class ListScene extends Component {
     }
     thingsList = thingsList.concat([defGroup]);
     
-    this.setState({thingsList: thingsList});
+    this.setState({thingsList: thingsList, visibleThings: thingsList});
+  }
+  
+  filterThings(thingId, context){
+    var visibleThings = [];
+    
+    for (i=0; i<context.state.thingsList.length; i++){
+      for (j=0; j<context.state.thingsList[i].length; j++){
+        if (context.state.thingsList[i][j].key == thingId){
+          visibleThings = visibleThings.concat(context.state.thingsList[i][j]);
+        }
+      }
+    }
+    
+    console.log('filter:', visibleThings);
+    
+    if (visibleThings.length === 0)
+      context.setState({visibleThings: []});
+    else
+      context.setState({visibleThings: [visibleThings]});
+    
   }
 }
 

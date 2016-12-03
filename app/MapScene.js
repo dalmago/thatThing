@@ -6,6 +6,8 @@ import {
   Image,
   Dimensions,
   ActivityIndicator,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native'
 
 import MapView from 'react-native-maps';
@@ -32,12 +34,26 @@ export class MapScene extends Component {
     Icon.getImageSource('map-marker', 30, "rgb(245,166,35)").then((source) => this.setState({ thingIcon3: source }));
     Icon.getImageSource('map-marker', 30, "rgb(208,2,27)").then((source) => this.setState({ thingIcon4: source }));
     
-    navigator.geolocation.getCurrentPosition((pos) => {
-      this.setState({loading: false, region: {latitude: pos.coords.latitude, 
-                                              longitude: pos.coords.longitude, 
-                                              latitudeDelta: this.state.region.latitudeDelta, 
-                                              longitudeDelta: this.state.region.longitudeDelta}});
-    }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});
+    if (Platform.OS === 'ios'){
+      navigator.geolocation.getCurrentPosition((pos) => {
+        this.setState({loading: false, region: {latitude: pos.coords.latitude, 
+                                                longitude: pos.coords.longitude, 
+                                                latitudeDelta: this.state.region.latitudeDelta, 
+                                                longitudeDelta: this.state.region.longitudeDelta}});
+      }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});
+    
+    } else{
+      PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION).then((per) => {
+        if (per){
+          navigator.geolocation.getCurrentPosition((pos) => {
+            this.setState({loading: false, region: {latitude: pos.coords.latitude, 
+                                                    longitude: pos.coords.longitude, 
+                                                    latitudeDelta: this.state.region.latitudeDelta, 
+                                                    longitudeDelta: this.state.region.longitudeDelta}});
+          }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});
+        }
+      });
+    }
   }
   
   render() {    
