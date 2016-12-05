@@ -13,7 +13,7 @@ import {
 export class LoginScene extends Component {
   constructor(props){
     super(props);
-    
+
     this.state = {pickerValue: 'dw', loading: false, text: '', text2: ''};
   }
   render() {
@@ -25,14 +25,14 @@ export class LoginScene extends Component {
           alignItems: "center",
           backgroundColor: "rgb(74,144,226)",
         }}>
-        
+
         <View
           style={{
             flex: 1,
             justifyContent: "flex-end",
             alignItems: "center",
-          }}>          
-          <Picker 
+          }}>
+          <Picker
             style={{
               width: 200,
             }}
@@ -42,10 +42,10 @@ export class LoginScene extends Component {
             <Picker.Item label={'AWS IoT'} value={'aws'} />
             <Picker.Item label={'Cisco Jasper'} value={'jas'} />
           </Picker>
-          
+
           <Text>{'\n'}</Text>
         </View>
-        
+
         <View
           style={{
             flex: 1,
@@ -54,7 +54,7 @@ export class LoginScene extends Component {
           }}>
           <TextInput
             style={{
-              height: 50, 
+              height: 50,
               width: 300,
               borderWidth: 4,
               borderColor: "rgba(0,0,0,0.5)",
@@ -94,7 +94,7 @@ export class LoginScene extends Component {
             value={(this.state && this.state.text2) || ''}
           />
         </View>
-        
+
         <View
           style={{
             flex: 1,
@@ -102,7 +102,7 @@ export class LoginScene extends Component {
             alignItems: "center",
           }}>
           <Text>{'\n'}</Text>
-          
+
           {(this.state.loading)?
           <ActivityIndicator
             style={{
@@ -122,32 +122,32 @@ export class LoginScene extends Component {
             color="rgb(0,0,0)"
           />}
         </View>
-        
+
       </View>
     );
   }
-  
-  login(nav){   
+
+  login(nav){
     this.setState({loading: true});
-    
+
     var portal = this.state.pickerValue;
-    
+
     switch(portal){
       case 'dw':
         this.login_dw(nav);
         break;
-        
+
       default:
         Alert.alert('Portal ainda não implementado');
         this.setState({loading: false});
     }
   }
-  
+
   login_dw(nav){
     var login = this.state.text;
     var pass = this.state.text2;
     var server = "https://api.devicewise.com/api";
-    
+
     js = {
       "auth" : {
         "command" : "api.authenticate",
@@ -157,14 +157,14 @@ export class LoginScene extends Component {
         }
       }
     }
-    
+
     fetch(server, {
       method: 'POST',
       body: JSON.stringify(js)
     }).then((res) => res.json()).then((res) => {
       if (__DEV__ === true) // if in development
         console.log('login_dw: ', res);
-      
+
       if (res.success === false){
         this.setState({loading: false, text:'', text2: ''});
         Alert.alert('Login falhou!', 'Usuário ou senha inválido');
@@ -174,12 +174,14 @@ export class LoginScene extends Component {
         nav.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
       } else{
         Alert.alert('Erro desconhecido');
+        this.setState({loading: false, text:'', text2: ''});
       }
     }).catch((err) => {
       if (__DEV__ === true) // if in development
         console.log('login_dw err: ', err);
-      
+
       Alert.alert('Login falhou!', 'Verifique sua conexão com a internet');
+      this.setState({loading: false});
     });
   }
 }

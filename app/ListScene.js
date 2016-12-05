@@ -99,7 +99,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>          
+              }}/>            
           </View>
         </View>
         
@@ -131,10 +131,9 @@ export class ListScene extends Component {
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
               />
-                        
+                          
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
-                onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}}   >      
-              </Icon.Button>
+                onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}} />
             </View>
 
             <Text style={{fontSize: 5}}>{'\n'}</Text>
