@@ -24,10 +24,17 @@ export class MapScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: true, region: {latitude: LATITUDE,  
-                                          longitude: LONGITUDE, 
+    if (this.props.route.initialCoords != null){
+      this.state = {loading: true, region: {latitude: this.props.route.initialCoords.lat,  
+                                          longitude: this.props.route.initialCoords.lng, 
                                           latitudeDelta: LATITUDE_DELTA, 
                                           longitudeDelta: LONGITUDE_DELTA}};
+    } else{
+      this.state = {loading: true, region: {latitude: LATITUDE,  
+                                            longitude: LONGITUDE, 
+                                            latitudeDelta: LATITUDE_DELTA, 
+                                            longitudeDelta: LONGITUDE_DELTA}};
+    }
     
     Icon.getImageSource('map-marker', 30, "rgb(65,117,5)").then((source) => this.setState({ thingIcon1: source }));
     Icon.getImageSource('map-marker', 30, "rgb(248,231,28)").then((source) => this.setState({ thingIcon2: source }));

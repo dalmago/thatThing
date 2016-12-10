@@ -1,7 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   Dimensions,
   StyleSheet,
   Text,

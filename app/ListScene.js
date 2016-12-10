@@ -27,7 +27,14 @@ export class ListScene extends Component {
       
       var things = thingCat.map((thing, j) => {
         return (
-          <View key={j}><Text style={styles.content}>{thing.name}</Text>
+          <View key={j}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigator.push({sceneIndex: 4, thing: thing});
+              }}
+              activeOpacity={75 / 100}>
+              <Text style={styles.content}>{thing.name}</Text>
+            </TouchableOpacity>
             <Text style={{fontSize: 5}}>{'\n'}</Text>
           </View>
         );}, this);
@@ -39,6 +46,8 @@ export class ListScene extends Component {
           { things }
         </View>
       );}, this);
+    
+    var blankSpace = <Text style={{fontSize: 5}}>{'\n'}</Text>;
     
     return (
       <View
@@ -99,7 +108,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>            
+              }}/>                  
           </View>
         </View>
         
@@ -121,7 +130,7 @@ export class ListScene extends Component {
           <ScrollView 
             horizontal={false}>
             
-            <Text style={{fontSize: 5}}>{'\n'}</Text>
+            {blankSpace}
             <View
               style={{
                 flex: 1,
@@ -131,12 +140,12 @@ export class ListScene extends Component {
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
               />
-                          
+                                
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}} />
             </View>
 
-            <Text style={{fontSize: 5}}>{'\n'}</Text>
+            {blankSpace}
             
             { thingGroup }
             
@@ -147,6 +156,18 @@ export class ListScene extends Component {
   }
   
   getThingsList(){
+    switch(this.props.route.portal){
+      case 'dw':
+        this.getThingsDW();
+        break;
+
+      default:
+        Alert.alert('Portal ainda não implementado');
+        this.setState({loading: false});
+    }
+  }
+  
+  getThingsDW(){
     var server = "https://api.devicewise.com/api";
     var sessionId = this.props.route.sessionId;
     

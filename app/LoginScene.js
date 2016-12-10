@@ -90,7 +90,7 @@ export class LoginScene extends Component {
             placeholder={"Password"}
             placeholderTextColor={"rgb(103,103,103)"}
             onChangeText={(text) => {this.setState({text2: text})}}
-            onSubmitEditing={() => {this.login(this.props.navigator);}}
+            onSubmitEditing={() => {this.login()}}
             value={(this.state && this.state.text2) || ''}
           />
         </View>
@@ -115,9 +115,7 @@ export class LoginScene extends Component {
           />
           :
           <Button
-            onPress={()=>{
-              this.login(this.props.navigator);
-            }}
+            onPress={() => {this.login()}}
             title="Login"
             color="rgb(0,0,0)"
           />}
@@ -127,14 +125,14 @@ export class LoginScene extends Component {
     );
   }
 
-  login(nav){
+  login(){
     this.setState({loading: true});
 
     var portal = this.state.pickerValue;
 
     switch(portal){
       case 'dw':
-        this.login_dw(nav);
+        this.login_dw();
         break;
 
       default:
@@ -143,7 +141,7 @@ export class LoginScene extends Component {
     }
   }
 
-  login_dw(nav){
+  login_dw(){
     var login = this.state.text;
     var pass = this.state.text2;
     var server = "https://api.devicewise.com/api";
@@ -171,7 +169,7 @@ export class LoginScene extends Component {
       } else if (res.auth.success === true){
         //nav.pop();
         //nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
-        nav.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
+        this.props.navigator.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
       } else{
         Alert.alert('Erro desconhecido');
         this.setState({loading: false, text:'', text2: ''});
