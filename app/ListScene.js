@@ -22,7 +22,7 @@ export class ListScene extends Component {
     this.getThingsList();
   }
   render() {
-
+    
     var thingGroup = this.state.visibleThings.map((thingCat, i) => {
       
       var things = thingCat.map((thing, j) => {
@@ -31,7 +31,7 @@ export class ListScene extends Component {
           <View key={j}>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigator.push({sceneIndex: 4, thing: thing});
+                this.props.navigator.push({sceneIndex: 4, thing: thing, sessionId: this.props.route.sessionId});
               }}
               activeOpacity={75 / 100}>
               <Text style={styles.content}>{thing.name}</Text>
@@ -109,7 +109,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>                    
+              }}/>                      
           </View>
         </View>
         
@@ -141,7 +141,7 @@ export class ListScene extends Component {
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
               />
-                                  
+                                    
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}} />
             </View>
@@ -191,7 +191,6 @@ export class ListScene extends Component {
         console.log('getThingsList: ', res);
       
       if (res[1].success === true){
-        //this.setState({thingsList: res[1].params});
         this.updateThingsList(res[1].params.result);
       } else{
         Alert.alert('Erro obtendo dados', 'Tente fazer login novamente');

@@ -11,9 +11,11 @@ import {
   View,
   Button,
   TextInput,
-  Picker,
-  Image,
   ScrollView,
+  Modal,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
 } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -28,6 +30,9 @@ export class ThingScene extends Component {
         lng: this.props.route.thing.loc.lng,
       }
     }
+    
+    this.state = {modal: false, modalLoading: false, editThing: {type: '', thing: ['', {value: ''}]}};
+
   }
   render() {
     var blankSpace = <Text style={{fontSize: 5}}>{'\n'}</Text>;
@@ -36,7 +41,13 @@ export class ThingScene extends Component {
       return (
         <View key={i}>
           <Text style={styles.subtitles}>{ prop[0] }</Text>
-          <Text style={styles.texts}>{ prop[1].value }</Text>
+          
+          <TouchableOpacity
+            onPress={() => {this.setState({modal: true, editThing: {thing: prop, type:'p'}})}}
+            activeOpacity={75 / 100}>
+            <Text style={styles.texts}>{ prop[1].value }</Text>
+          </TouchableOpacity>
+          
         </View>
       );}, this);
     
@@ -44,7 +55,12 @@ export class ThingScene extends Component {
       return (
         <View key={i}>
           <Text style={styles.subtitles}>{ alrm[0] }</Text>
-          <Text style={styles.texts}>{ alrm[1].state }</Text>
+          
+          <TouchableOpacity
+            onPress={() => {this.setState({modal: true, editThing: {thing: alrm, type:'s'}})}}
+            activeOpacity={75 / 100}>
+            <Text style={styles.texts}>{ alrm[1].state }</Text>
+          </TouchableOpacity>
         </View>
       );}, this);
 
@@ -127,8 +143,147 @@ export class ThingScene extends Component {
             
           </ScrollView>
         </View>
+        
+        <View> 
+          <Modal 
+            animationType={'fade'}
+            transparent={true}
+            visible={this.state.modal}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                padding: 20,
+                backgroundColor: "rgba(210,210,210,0.73)",
+              }}>
+              
+              {(this.state.modalLoading)?
+              <ActivityIndicator
+                  animating={true}
+                  size={"large"}
+                  color={'black'}
+              />:
+              
+              <View
+              style={{
+                borderRadius: 10,
+                padding: 20,
+                alignItems: 'center',
+                backgroundColor: "rgba(35,109,197,1)",
+                justifyContent: "center",
+                alignItems: "center",
+                }}>
+                
+                <Text style={styles.subtitles}>{this.state.editThing.thing[0]}</Text>
+                {blankSpace}
+                <TextInput
+                  style={{
+                    height: 43, 
+                    width: 191,
+                    borderWidth: 1,
+                    borderColor: "rgba(0,0,0,0.5)",
+                    textAlign: "center",
+                  }}
+                  keyboardType={"numeric"}
+                  autoFocus={true}
+                  onChangeText={(text) => {
+                    (this.state.editThing.type === 'p')?
+                      this.setState({editThing: {type: this.state.editThing.type, thing:[this.state.editThing.thing[0], {value: text}]}})
+                      : this.setState({editThing: {type: this.state.editThing.type, thing:[this.state.editThing.thing[0], {state: text}]}})
+                  }}
+                  onSubmitEditing={() => {this.sendToDW(this.state.editThing.type, this.state.editThing.thing)}}
+                  value={
+                    (this.state.editThing.type === 'p')?
+                    String(this.state.editThing.thing[1].value)
+                    : String(this.state.editThing.thing[1].state)
+                  }
+                />
+                {blankSpace}
+                <View
+                  style={{
+                    flexDirection: 'row'
+                  }}>
+                  <Button
+                    onPress={() => {this.setState({modal: false})}}
+                    title="Cancelar"
+                    color="rgb(0,0,0)"
+                  />
+                  <Text>{"   "}</Text>
+                  <Button
+                    onPress={() => {this.sendToDW(this.state.editThing.type, this.state.editThing.thing)}}
+                    title="Enviar"
+                    color="rgb(0,0,0)"
+                  />
+                </View>
+              </View>}
+            </View>
+          </Modal>
+        </View>
       </View>
     );
+  }
+  
+  sendToDW(type, keyValue){
+    this.setState({modalLoading: true});
+    
+    var server = "https://api.devicewise.com/api";
+    var sessionId = this.props.route.sessionId;
+    
+    var key = keyValue[0];
+    
+    var value = null;
+    if (type === 'p'){ // property
+      value = keyValue[1].value;
+      
+      var js = {
+        "auth":{"sessionId": sessionId},
+        "1": {
+          "command": "property.publish",
+          "params" : {
+            "thingKey": this.props.route.thing.key,
+            "key": key,
+            "value": value
+          }
+        }
+      }
+    }
+    else{ // state
+      value = keyValue[1].state;
+      
+      js ={
+        "auth":{"sessionId": sessionId},
+        "1": {
+          "command": "alarm.publish",
+          "params" : {
+            "thingKey": this.props.route.thing.key,
+            "key": key,
+            "state": value
+          }
+        }
+      }
+    }
+    
+  fetch(server, {method: 'POST', body: JSON.stringify(js)}).then((res) => res.json()).then((res) => {
+    if (__DEV__ === true)
+      console.log('sendToDW:', res);
+    
+    this.setState({modalLoading: false});
+    
+    if (res[1].success === true){
+      this.setState({modal: false});
+      this.props.navigator.pop();
+    } else{
+      Alert.alert('Valor inválido');  
+    }    
+    
+  }).catch((err) => {
+    if (__DEV__ === true)
+      console.log('sendToDW err:', err);
+    
+    Alert.alert('Envio falhou!', 'Verifique sua conexão com a internet');
+  });
+    
   }
 }
 

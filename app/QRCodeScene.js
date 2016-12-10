@@ -18,7 +18,8 @@ export class QRCodeScene extends Component {
   constructor(props){
     super(props);
 
-    PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
+    if (Platform.OS === 'android')
+      PermissionsAndroid.requestPermission(PermissionsAndroid.PERMISSIONS.CAMERA);
     
   }
   
