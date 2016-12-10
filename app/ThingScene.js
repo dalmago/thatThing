@@ -22,9 +22,11 @@ export class ThingScene extends Component {
   constructor(props){
     super(props);
     
-    this.loc = {
-      lat: this.props.route.thing.loc.lat,
-      lng: this.props.route.thing.loc.lng,
+    if (this.props.route.thing.hasOwnProperty("loc")){
+      this.loc = {
+        lat: this.props.route.thing.loc.lat,
+        lng: this.props.route.thing.loc.lng,
+      }
     }
   }
   render() {
@@ -93,10 +95,11 @@ export class ThingScene extends Component {
               justifyContent: "center",
               alignItems: "center",
             }}>
+            {(this.props.route.thing.hasOwnProperty("loc"))?
             <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(35,109,197)" 
                 onPress={() => {
                 this.props.navigator.push({sceneIndex: 2, thingsList: [[this.props.route.thing]], initialCoords: this.loc});
-              }} />
+              }} />:<Text />}
           </View>
         </View>
         

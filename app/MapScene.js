@@ -29,6 +29,7 @@ export class MapScene extends Component {
                                           longitude: this.props.route.initialCoords.lng, 
                                           latitudeDelta: LATITUDE_DELTA, 
                                           longitudeDelta: LONGITUDE_DELTA}};
+      
     } else{
       this.state = {loading: true, region: {latitude: LATITUDE,  
                                             longitude: LONGITUDE, 
@@ -40,6 +41,7 @@ export class MapScene extends Component {
     Icon.getImageSource('map-marker', 30, "rgb(248,231,28)").then((source) => this.setState({ thingIcon2: source }));
     Icon.getImageSource('map-marker', 30, "rgb(245,166,35)").then((source) => this.setState({ thingIcon3: source }));
     Icon.getImageSource('map-marker', 30, "rgb(208,2,27)").then((source) => this.setState({ thingIcon4: source }));
+    Icon.getImageSource('map-marker', 30, "rgb(0,122,255)").then((source) => this.setState({ thingIcon: source }));
     
     if (Platform.OS === 'ios'){
       navigator.geolocation.getCurrentPosition((pos) => {
@@ -104,10 +106,13 @@ export class MapScene extends Component {
               alignItems: "center",
             }}>
             <Icon.Button name="map-marker" size={50} color="rgb(0,0,0)" backgroundColor="rgba(35,109,197,1)" 
-              onPress={() => {this.setState({region: {latitude: LATITUDE,  
-                                                      longitude: LONGITUDE, 
-                                                      latitudeDelta: LATITUDE_DELTA, 
-                                                      longitudeDelta: LONGITUDE_DELTA}})}}
+              onPress={() => {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                  this.setState({region: {latitude: pos.coords.latitude, 
+                                          longitude: pos.coords.longitude, 
+                                          latitudeDelta: this.state.region.latitudeDelta, 
+                                          longitudeDelta: this.state.region.longitudeDelta}});
+                }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});}}
             />
           </View>
         </View>
@@ -144,15 +149,31 @@ export class MapScene extends Component {
             
             onRegionChange={(region) => {this.setState({region: region})}}>
             {
-            this.props.route.thingsList[0].map((thing, i) => {
-              var trash_level = thing.properties.trash_level.value;
-              return (
-                  <MapView.Marker coordinate={{latitude: thing.loc.lat, longitude: thing.loc.lng}} key={i} 
-                    image={((trash_level < 25)? this.state.thingIcon1 : 
-                           ((trash_level < 50)? this.state.thingIcon2 : 
-                            ((trash_level < 75)? this.state.thingIcon3 : this.state.thingIcon4)))}
-                  />
-              );}, this)
+              this.props.route.thingsList.map((thingCat, j) => {
+                return(
+                  thingCat.map((thing, i) => {
+                    
+                    if (thing.hasOwnProperty("loc")){
+                    
+                      if (thing.defKey === "spin_key"){
+                        var trash_level = thing.properties.trash_level.value;
+                        return (
+                            <MapView.Marker coordinate={{latitude: thing.loc.lat, longitude: thing.loc.lng}} key={i} 
+                              image={((trash_level < 25)? this.state.thingIcon1 : 
+                                     ((trash_level < 50)? this.state.thingIcon2 : 
+                                      ((trash_level < 75)? this.state.thingIcon3 : this.state.thingIcon4)))}
+                            />
+                        );
+                      } else{
+                        return (<MapView.Marker coordinate={{latitude: thing.loc.lat, longitude: thing.loc.lng}} key={i} 
+                              image={this.state.thingIcon}
+                            />);
+                      }
+                    }
+                }, this)
+
+                );
+              }, this)
             }
           </MapView>}
         </View>

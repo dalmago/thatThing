@@ -167,9 +167,30 @@ export class LoginScene extends Component {
         this.setState({loading: false, text:'', text2: ''});
         Alert.alert('Login falhou!', 'Usuário ou senha inválido');
       } else if (res.auth.success === true){
-        //nav.pop();
-        //nav.push({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
-        this.props.navigator.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });
+        
+        
+        js_org = {
+          "auth":{"sessionId": res.auth.params.sessionId},
+          "1": {
+            "command": "session.org.switch",
+            "params" : {
+              "key" : "UNIVERSIDADEFEDERALDESANTAMARIA"
+            }
+          }
+        }
+        
+        fetch(server, {method: 'POST', body: JSON.stringify(js_org)}).then((res2) => res2.json()).then((res2) => {
+          if (res2[1].success === true){
+            if (__DEV__ === true)
+              console.log('login_dw org: ', res2);
+            
+            this.props.navigator.resetTo({ sceneIndex: 1, sessionId: res.auth.params.sessionId, portal: 'dw' });            
+          }
+        }).catch((err) => {
+          if (__DEV__ === true)
+            console.log('login_dw org err: ', err);
+        });
+        
       } else{
         Alert.alert('Erro desconhecido');
         this.setState({loading: false, text:'', text2: ''});

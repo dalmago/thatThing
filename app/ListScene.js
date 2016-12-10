@@ -26,6 +26,7 @@ export class ListScene extends Component {
     var thingGroup = this.state.visibleThings.map((thingCat, i) => {
       
       var things = thingCat.map((thing, j) => {
+      
         return (
           <View key={j}>
             <TouchableOpacity
@@ -108,7 +109,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>                  
+              }}/>                    
           </View>
         </View>
         
@@ -140,7 +141,7 @@ export class ListScene extends Component {
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
               />
-                                
+                                  
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}} />
             </View>
@@ -177,8 +178,7 @@ export class ListScene extends Component {
         "command": "thing.list",
         "params" : {
           "limit": 10,
-          "sort": "+defName",
-          "hasLoc": true
+          "sort": "+defName"
         }
       }
     }
@@ -216,7 +216,8 @@ export class ListScene extends Component {
         defGroup = defGroup.concat(list[i]);
       } else{
         thingsList = thingsList.concat([defGroup]);
-        defGroup = [];
+        defGroup = [list[i]];
+        lastDefName = list[i].defName;
       }
     }
     thingsList = thingsList.concat([defGroup]);
