@@ -71,7 +71,6 @@ export class QRCodeScene extends Component {
       Alert.alert('Thing não encontrada!');
     }
     else{
-      //this.props.navigator.pop();
       this.props.navigator.replace({sceneIndex: 4, thing: thingFound, sessionId: this.props.route.sessionId});
     }
   }

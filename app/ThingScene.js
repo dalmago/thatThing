@@ -141,6 +141,34 @@ export class ThingScene extends Component {
             
             {blankSpace}
             
+            <Text style={styles.titles}>Location</Text>
+            {(this.props.route.thing.hasOwnProperty("loc"))?
+            <View >
+              <Text style={styles.subtitles}>Latitude</Text>
+              <Text style={styles.texts}>{this.loc.lat}</Text>
+              <Text style={styles.subtitles}>Longitude</Text>
+              <Text style={styles.texts}>{this.loc.lng}</Text>
+            </View>
+            :<View />}
+            {blankSpace}
+            
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}>
+              <Icon.Button name="map-marker" size={50} color="rgb(0,0,0)" backgroundColor="rgb(74,144,226)" 
+                onPress={() => {
+                  
+                  Alert.alert("Enviar posição atual para o portal?", "", [{text:"Cancelar"}, {text: "Enviar", onPress: () => {
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                      this.setState({modal: true});
+                      this.sendToDW('l', [null, {lat: pos.coords.latitude, lng: pos.coords.longitude}]);
+                      
+                  }, () => {}, {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000});
+                  }}]);}}
+              />
+            </View>
           </ScrollView>
         </View>
         
@@ -248,7 +276,7 @@ export class ThingScene extends Component {
         }
       }
     }
-    else{ // state
+    else if (type === 's'){ // state
       value = keyValue[1].state;
       
       js ={
@@ -259,6 +287,20 @@ export class ThingScene extends Component {
             "thingKey": this.props.route.thing.key,
             "key": key,
             "state": value
+          }
+        }
+      }
+    } else { // location
+      value = keyValue[1];
+      
+      js ={
+        "auth":{"sessionId": sessionId},
+        "1": {
+          "command": "location.publish",
+          "params" : {
+            "thingKey": this.props.route.thing.key,
+            "lat": value.lat,
+            "lng": value.lng
           }
         }
       }
