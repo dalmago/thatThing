@@ -17,13 +17,13 @@ export class ListScene extends Component {
   constructor(props){
     super(props);
     
-    this.state = {loading: true, thingsList: [], visibleThings: []};
+    this.state = {loading: true, thingsList: []};
     
     this.getThingsList();
   }
   render() {
     
-    var thingGroup = this.state.visibleThings.map((thingCat, i) => {
+    var thingGroup = this.state.thingsList.map((thingCat, i) => {
       
       var things = thingCat.map((thing, j) => {
       
@@ -109,7 +109,7 @@ export class ListScene extends Component {
             <Icon.Button name="refresh" size={50} color="rgba(40,40,40,1)" backgroundColor="rgba(35,109,197,1)" onPress={() => {
                 this.setState({loading: true});
                 this.getThingsList();
-              }}/>                      
+              }}/>                        
           </View>
         </View>
         
@@ -139,9 +139,9 @@ export class ListScene extends Component {
               }}>
               
               <Icon.Button name="search" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
-                onPress={() => {this.props.navigator.push({sceneIndex: 3, onQRCodeRead: this.filterThings, context: this})}} 
+                onPress={() => {this.props.navigator.push({sceneIndex: 3, thingsList: this.state.thingsList, sessionId: this.props.route.sessionId})}} 
               />
-                                    
+                                      
               <Icon.Button name="map" size={50} color="rgba(42,42,42,1)" backgroundColor="rgb(74,144,226)" 
                 onPress={() => {this.props.navigator.push({sceneIndex: 2, thingsList: this.state.thingsList})}} />
             </View>
@@ -221,31 +221,9 @@ export class ListScene extends Component {
     }
     thingsList = thingsList.concat([defGroup]);
     
-    this.setState({thingsList: thingsList, visibleThings: thingsList});
-  }
-  
-  filterThings(thingId, context){
-    var visibleThings = [];
-    
-    for (i=0; i<context.state.thingsList.length; i++){
-      for (j=0; j<context.state.thingsList[i].length; j++){
-        if (context.state.thingsList[i][j].key == thingId){
-          visibleThings = visibleThings.concat(context.state.thingsList[i][j]);
-        }
-      }
-    }
-    
-    console.log('filter:', visibleThings);
-    
-    if (visibleThings.length === 0)
-      context.setState({visibleThings: []});
-    else
-      context.setState({visibleThings: [visibleThings]});
-    
+    this.setState({thingsList: thingsList});
   }
 }
-
-//thingsList: [{"def": "nomeDef", "thingKeys":[]}, ...]
 
 const styles = StyleSheet.create({
   titles: {
